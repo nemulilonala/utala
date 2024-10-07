@@ -1,5 +1,7 @@
-require "chr.chrloader" --handles loading of all chr lua files
+require "chr" --handles loading of all chr lua files
 
+--because its a FIGHTER GAME and fighter games run at 60 fps so we need something to facilitate that
+--these are the variables used to do so
 local tickrate = 1/60
 local accumulator = 0.0
 
@@ -17,11 +19,13 @@ function love.load()
 end
 
 function love.update(dt)
+  --make sure tickrate is constant 60, regardless of monitor fps
   accumulator = accumulator + dt
   while accumulator > tickrate do
+    accumulator = accumulator - tickrate
+    --actual game logic gets called here
       pman:beginstep()
       pman:endstep()
-      accumulator = accumulator - tickrate
   end
 end
 
