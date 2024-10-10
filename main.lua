@@ -6,16 +6,44 @@ local tickrate = 1/60
 local accumulator = 0.0
 
 function love.load()
-  --graphics
+  --graphics and stage size
   love.graphics.setDefaultFilter("nearest", "nearest")
+  bg = love.graphics.newImage('img/bg/mountains.png')
   windowbase = { w = 1072, h = 603}
   windowcurrent = windowbase
   windowscale = { w = 1, h = 1, x = 1}
+  --players and stage
 	floorpos = windowbase.h-100
 	startingdist = 200
 	stagewidth = windowbase.w
   pman = playermanager.new()
-  pman:spawnplayers(chrcat, chrcat)
+  pman:spawnplayers(chraid, chrcat)
+  
+  --init controls from config
+  local configpath = "config.cfg"
+  print (love.filesystem.read(configpath))
+  p1cont = {
+    atka = "y",
+    atkb = "u",
+    atkc = "i",
+    atkd = "o",
+    atke = "p",
+    left = "a",
+    right = "d",
+    up = "s",
+    down= "w"
+  }
+  p2cont = {
+    atka = "h",
+    atkb = "j",
+    atkc = "k",
+    atkd = "l",
+    atke = ";",
+    left = "left",
+    right = "right",
+    up = "up",
+    down = "down"
+  }
 end
 
 function love.update(dt)
@@ -44,7 +72,9 @@ function love.draw()
   love.graphics.scale(windowscale.x,windowscale.x)
   --set bg
   love.graphics.setBackgroundColor( 0.3, 0.5, 0.5)
-  love.graphics.setColor(1,0.8,0)
+  love.graphics.setColor(1,1,1)
+  love.graphics.draw(bg, -237, -89)
+  love.graphics.setColor(1,1,1,0.1)
   love.graphics.rectangle("fill",0,0,windowbase.w,windowbase.h)
   pman:drawstep()
 end
