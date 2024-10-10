@@ -36,7 +36,7 @@ function chraid:init()
     
   self.statefuncs = {
     idle = function () 
-      self:genswitchstate({"atk5a","walkf","walkb"},30,"idle")
+      self:genswitchstate({"atk5a","crouch","walkf","walkb"},30,"idle")
       self.xspd = 0
       self.yspd = 0
       self:facex(self.otherplayer.x)
@@ -44,7 +44,7 @@ function chraid:init()
       self.drawframe = 1
     end,
     walkf = function () 
-      self:genswitchstate({"atk5a","idle","walkb"},30,"walkf")
+      self:genswitchstate({"atk5a","crouch","idle","walkb"},30,"walkf")
       self.xspd = 2*self.facing 
       self.yspd = 0
       self:facex(self.otherplayer.x)
@@ -52,7 +52,7 @@ function chraid:init()
       self.drawframe = 1
     end,
     walkb = function () 
-      self:genswitchstate({"atk5a","idle","walkf"},30,"walkb")
+      self:genswitchstate({"atk5a","crouch","idle","walkf"},30,"walkb")
       self.xspd = 2*-self.facing 
       self.yspd = 0
       self:facex(self.otherplayer.x)
@@ -71,7 +71,15 @@ function chraid:init()
         self.sprite = self.sprites.idle
         self.drawframe = 1
       end
-    end
+    end,
+    crouch = function()
+      self:genswitchstate({"atk5a","idle","walkf","walkb"},30,"crouch")
+      self.xspd = 0
+      self.yspd = 0
+      self:facex(self.otherplayer.x)
+      self.sprite = self.sprites.crouch
+      self.drawframe = 1
+      end
 }
 end
 
@@ -79,10 +87,11 @@ end
 
 
 function chraid:switchstate(_test)
-  if      _test == "idle"   then if   self.hdir == 0        then return true end
-  elseif  _test == "walkf"  then if   self.hdir == 1        then return true end
-  elseif  _test == "walkb"  then if   self.hdir == -1       then return true end 
-  elseif  _test == "atk5a"  then if   self.but.jatka == true then return true end 
+  if      _test == "idle"   then if   self.ndir == 5        then return true end
+  elseif  _test == "walkf"  then if   self.ndir == 6        then return true end
+  elseif  _test == "walkb"  then if   self.ndir == 4       then return true end 
+elseif  _test == "atk5a"  then if   self.but.jatka == true then return true end 
+elseif  _test == "crouch"  then if   self.vdir == -1 == true then return true end 
 end
 end
 
