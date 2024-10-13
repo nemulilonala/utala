@@ -35,10 +35,13 @@ function playerclass:new(playerid,xpos,ypos)
   instance.curframe = 0
   instance.xspd = 0
   instance.yspd = 0
+  instance.hurtboxes = {}
+  instance.hitboxes = {}
   return instance
 end
 
 function playerclass:update()
+  self.switchstates[self.state]()
   self.statefuncs[self.state]()
 end
 
@@ -106,9 +109,9 @@ function playerclass:getcontrols()
   
   --set vdir (vertical direction, up or down)
   if self.but.up then
-    self.vdir = -1
-  elseif self.but.down then
     self.vdir = 1
+  elseif self.but.down then
+    self.vdir = -1
   else
     self.vdir = 0
   end
@@ -124,6 +127,7 @@ function playerclass:begin()
 end
 
 function playerclass:genswitchstate(_arr,_finalframe,_finalframeswitchto)
+  returnvalue = false
   _newstate = ""
   for i, obj in ipairs(_arr) do
     if self:switchstate(obj) then _newstate = obj break end
@@ -131,14 +135,19 @@ function playerclass:genswitchstate(_arr,_finalframe,_finalframeswitchto)
   if _newstate == "" then
     if self.curframe >=_finalframe then
       self:changestate(_finalframeswitchto) end
+      returnvalue = true
   else
     self:changestate(_newstate)
+    returnvalue = true
   end
+  return returnvalue
 end
 
 function playerclass:changestate(_state)
   self.state = _state
   self.curframe = 0
+  self.hurtboxes = {}
+  self.hitboxes = {}
 end
 
 function playerclass:move(_xspd, _yspd)
@@ -155,7 +164,12 @@ function playerclass:facex(_otherx)
   elseif self.x > _otherx then self.facing = -1 end
 end
 
+function playerclass:createhurtbox(xscale, yscale, xoff, yoff)
+  local newhurtbox = hurtboxclass:new(xscale, yscale, xoff, yoff)
+  table.insert(self.hurtboxes, newhurtbox)
+end
 
-
-
-
+function playerclass:createhitbox(xscale, yscale, xoff, yoff)
+  local newhitbox = hitboxclass:new(xscale, yscale, xoff, yoff)
+  table.insert(self.hurtboxes, newhurtbox)
+end

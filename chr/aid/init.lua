@@ -33,18 +33,30 @@ function chraid:init()
   }
   self.sprite = self.sprites.idle
   self.drawframe = 1
-    
+
+  self.switchstates = {
+    idle = function() self:genswitchstate({"atk5a","jumpsquat","crouch","walkf","walkb"},30,"idle") end,
+    walkf = function ()  self:genswitchstate({"atk5a","jumpsquat","crouch","idle","walkb"},30,"walkf") end,
+    walkb = function () self:genswitchstate({"atk5a","jumpsquat","crouch","idle","walkf"},30,"walkb") end,
+    atk5a = function () self:genswitchstate({},35,"idle") end,
+    crouch = function() self:genswitchstate({"atk5a","jumpsquat","idle","walkf","walkb"},30,"crouch") end,
+    jumpsquat = function () self:genswitchstate({},30,"idle") end,
+    airborne = function() self:genswitchstate({"land"},30,"airborne") end,
+    land = function () self:genswitchstate({},5,"idle") end
+  }
+
   self.statefuncs = {
     idle = function () 
-      self:genswitchstate({"atk5a","jumpsquat","crouch","walkf","walkb"},30,"idle")
-      self.xspd = 0
-      self.yspd = 0
-      self:facex(self.otherplayer.x)
-      self.sprite = self.sprites.idle
-      self.drawframe = 1
+        self.xspd = 0
+        self.yspd = 0
+        self:facex(self.otherplayer.x)
+        if self.curframe == 0 then
+          self.sprite = self.sprites.idle
+          self.drawframe = 1
+          self:createhurtbox(0,0,24,55)
+        end
       end,
     walkf = function () 
-      self:genswitchstate({"atk5a","jumpsquat","crouch","idle","walkb"},30,"walkf")
       self.xspd = 4*self.facing 
       self.yspd = 0
       self:facex(self.otherplayer.x)
@@ -52,7 +64,6 @@ function chraid:init()
       self.drawframe = 1
       end,
     walkb = function () 
-      self:genswitchstate({"atk5a","jumpsquat","crouch","idle","walkf"},30,"walkb")
       self.xspd = 3*-self.facing 
       self.yspd = 0
       self:facex(self.otherplayer.x)
@@ -60,7 +71,6 @@ function chraid:init()
       self.drawframe = 1
       end,
     atk5a = function ()
-      self:genswitchstate({},35,"idle")
       if self.curframe == 1 then self.yspd = 10 self.xspd = 0
         self.sprite = self.sprites.idle
         self.drawframe = 1
@@ -73,7 +83,6 @@ function chraid:init()
         end
       end,
     crouch = function()
-      self:genswitchstate({"atk5a","jumpsquat","idle","walkf","walkb"},30,"crouch")
       self.xspd = 0
       self.yspd = 0
       self:facex(self.otherplayer.x)
@@ -81,7 +90,7 @@ function chraid:init()
       self.drawframe = 1
       end,
     jumpsquat = function()
-      self:genswitchstate({},30,"idle")
+      
       if self.curframe == 1 then self.yspd = 0 self.xspd = 0
         self.sprite = self.sprites.crouch
         self.drawframe = 1
@@ -93,13 +102,12 @@ function chraid:init()
       end
       end,
     airborne = function()
-      self:genswitchstate({"land"},30,"airborne")
       self.yspd = math.max(self.yspd-0.5,-15)
       self.sprite = self.sprites.idle
       self.drawframe = 1
       end,
     land = function()
-      self:genswitchstate({},5,"idle")
+      
       self.xspd = 0
       self.yspd = 0
       self.sprite = self.sprites.crouch

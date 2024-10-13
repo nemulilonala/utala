@@ -43,6 +43,10 @@ function playermanager:drawstep()
     love.graphics.points( obj.x, obj.y )                --debug, shows the exact coordinate position as a little dot
     love.graphics.setColor(1,1,0,0.5)
     love.graphics.rectangle("fill",obj.x-(obj.collision.w/2),obj.y-obj.collision.h,obj.collision.w,obj.collision.h)
+    for i, _box in ipairs(obj.hurtboxes) do
+        love.graphics.setColor(0,0,1,0.5)
+        love.graphics.rectangle("fill", obj.x+(_box.x*obj.facing)-(_box.w/2), obj.y+(-_box.y)-(_box.h), _box.w, _box.h)
+    end
     end
   end
 end

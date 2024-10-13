@@ -19,7 +19,7 @@ function love.load()
 	startingdist = 200
 	stagewidth = windowbase.w
   pman = playermanager.new()
-  pman:spawnplayers(chraid, chrcat)
+  pman:spawnplayers(chraid, chraid)
   
   --init config
   local configpath = "config.cfg"
