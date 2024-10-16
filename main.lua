@@ -7,6 +7,8 @@ local accumulator = 0.0
 
 
 function love.load()
+  
+
   debug = false
   --graphics and stage size
   love.graphics.setDefaultFilter("nearest", "nearest")
@@ -18,8 +20,6 @@ function love.load()
 	floorpos = windowbase.h-100
 	startingdist = 200
 	stagewidth = windowbase.w
-  pman = playermanager.new()
-  pman:spawnplayers(chraid, chraid)
   
   --init config
   local configpath = "config.cfg"
@@ -55,6 +55,7 @@ function love.load()
     up = config.p2up or "up",
     down = config.p2down or "down"
   }
+  initscene("llocal")
 end
 
 function love.update(dt)
@@ -63,8 +64,7 @@ function love.update(dt)
   while accumulator > tickrate do
     accumulator = accumulator - tickrate
     --actual game logic gets called here
-      pman:beginstep()
-      pman:endstep()
+    updatescene()
   end
 end
 
@@ -83,13 +83,7 @@ function love.draw()
   love.graphics.scale(windowscale.x,windowscale.x)
   --set bg
   love.graphics.setBackgroundColor( 0.3, 0.5, 0.5)
-  love.graphics.setColor(1,1,1)
-  love.graphics.draw(bg, -237, -89)
-  if debug then
-    love.graphics.setColor(1,1,1,0.1)
-    love.graphics.rectangle("fill",0,0,windowbase.w,windowbase.h)
-    end
-  pman:drawstep()
+  drawscene()
 end
 
 function love.resize(nw,nh)
@@ -103,3 +97,55 @@ function love.keypressed(key, scancode, isrepeat)
       if not debug then debug = true else debug = false end
    end
 end
+
+
+
+
+
+
+-- scene init func and stuff
+function updatescene()
+  sceneupdatefuncs[curscene]()
+end
+function drawscene()
+  scenedrawfuncs[curscene]()
+end
+function initscene(_scene)
+  scene = {}
+  curscene = _scene
+  sceneinitfuncs[_scene]()
+end
+
+
+sceneinitfuncs = {
+  mainmenu = function() 
+    scene.buttons = {{text="local",x=200,y=400,color={1,1,1},switchto="llocal"},
+    {text="server",x=400,y=400,color={1,1,1},switchto="server"},
+    {text="client",x=400,y=400,color={1,1,1},switchto="client"}}
+
+    scene.title = {text = "woawooawhhh!!!",x=200,y=200,color={1,1,1}}
+  end,
+  llocal = function()
+    pman = playermanager.new()
+    pman:spawnplayers(chraid, chraid)
+  end
+}
+sceneupdatefuncs = {
+  mainmenu = function()end,
+  llocal = function()
+    pman:beginstep()
+    pman:endstep()
+  end
+}
+scenedrawfuncs = {
+  mainmenu = function()end,
+  llocal = function()
+    love.graphics.setColor(1,1,1)
+    love.graphics.draw(bg, -237, -89)
+    if debug then
+      love.graphics.setColor(1,1,1,0.1)
+      love.graphics.rectangle("fill",0,0,windowbase.w,windowbase.h)
+      end
+    pman:drawstep()
+  end
+}

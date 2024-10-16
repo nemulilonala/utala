@@ -171,5 +171,5 @@ end
 
 function playerclass:createhitbox(xscale, yscale, xoff, yoff)
   local newhitbox = hitboxclass:new(xscale, yscale, xoff, yoff)
-  table.insert(self.hurtboxes, newhurtbox)
+  table.insert(self.hitboxes, newhitbox)
 end

@@ -35,14 +35,14 @@ function chraid:init()
   self.drawframe = 1
 
   self.switchstates = {
-    idle = function() self:genswitchstate({"atk5a","jumpsquat","crouch","walkf","walkb"},30,"idle") end,
-    walkf = function ()  self:genswitchstate({"atk5a","jumpsquat","crouch","idle","walkb"},30,"walkf") end,
-    walkb = function () self:genswitchstate({"atk5a","jumpsquat","crouch","idle","walkf"},30,"walkb") end,
-    atk5a = function () self:genswitchstate({},35,"idle") end,
-    crouch = function() self:genswitchstate({"atk5a","jumpsquat","idle","walkf","walkb"},30,"crouch") end,
+    idle = function()       self:genswitchstate({"atk5a","jumpsquat","crouch","walkf","walkb"},30,"idle") end,
+    walkf = function ()     self:genswitchstate({"atk5a","jumpsquat","crouch","idle","walkb"},30,"walkf") end,
+    walkb = function ()     self:genswitchstate({"atk5a","jumpsquat","crouch","idle","walkf"},30,"walkb") end,
+    atk5a = function ()     self:genswitchstate({},35,"idle") end,
+    crouch = function()     self:genswitchstate({"atk5a","jumpsquat","idle","walkf","walkb"},30,"crouch") end,
     jumpsquat = function () self:genswitchstate({},30,"idle") end,
-    airborne = function() self:genswitchstate({"land"},30,"airborne") end,
-    land = function () self:genswitchstate({},5,"idle") end
+    airborne = function()   self:genswitchstate({"land"},30,"airborne") end,
+    land = function ()      self:genswitchstate({},5,"idle") end
   }
 
   self.statefuncs = {
@@ -71,7 +71,7 @@ function chraid:init()
       self.drawframe = 1
       end,
     atk5a = function ()
-      if self.curframe == 1 then self.yspd = 10 self.xspd = 0
+      if self.curframe == 0 then self.yspd = 10 self.xspd = 0
         self.sprite = self.sprites.idle
         self.drawframe = 1
       elseif self.curframe == 11 then self.yspd = 0 self.xspd = 10*self.facing
@@ -91,7 +91,7 @@ function chraid:init()
       end,
     jumpsquat = function()
       
-      if self.curframe == 1 then self.yspd = 0 self.xspd = 0
+      if self.curframe == 0 then self.yspd = 0 self.xspd = 0
         self.sprite = self.sprites.crouch
         self.drawframe = 1
       elseif self.curframe >= 4 then
